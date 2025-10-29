@@ -20,40 +20,50 @@ export default function HoraDisplay() {
   const [error, setError] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState(new Date())
   function toLocalISOString(date = new Date()) {
-  const tzOffset = -date.getTimezoneOffset(); // in minutes
-  const diffMs = tzOffset * 60 * 1000;
-  const local = new Date(date.getTime() + diffMs);
-  const iso = local.toISOString().slice(0, -1); // remove trailing 'Z'
-  
-  // Format timezone offset as +05:30 or -04:00
-  const sign = tzOffset >= 0 ? '+' : '-';
-  const pad = n => String(Math.floor(Math.abs(n))).padStart(2, '0');
-  const hours = pad(tzOffset / 60);
-  const minutes = pad(tzOffset % 60);
-  
-  return `${iso}`;
+    const tzOffset = -date.getTimezoneOffset(); // in minutes
+    const diffMs = tzOffset * 60 * 1000;
+    const local = new Date(date.getTime() + diffMs);
+    const iso = local.toISOString().slice(0, -1); // remove trailing 'Z'
+
+    // Format timezone offset as +05:30 or -04:00
+    const sign = tzOffset >= 0 ? '+' : '-';
+    const pad = (n: number) => String(Math.floor(Math.abs(n))).padStart(2, '0');
+    const hours = pad(tzOffset / 60);
+    const minutes = pad(tzOffset % 60);
+
+    return `${iso}`;
   }
 
   const fetchHora = async (dateTime: Date) => {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetch("http://localhost:3000/getHora", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ time: toLocalISOString(dateTime) }),
-      })
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat =  pos.coords.latitude;
+          const lng = pos.coords.longitude;
 
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`)
-      }
+          const response = await fetch("http://localhost:3000/api/getHora", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ time: toLocalISOString(dateTime), lng, lat }),
+          })
 
-      const data = await response.json()
-      if (!data || !data.hora) {
-        throw new Error("Invalid response from server")
-      }
-      setHoraData(data)
-      setError(null)
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`)
+          }
+
+          const data = await response.json()
+          if (!data || !data.hora) {
+            throw new Error("Invalid response from server")
+          }
+          setHoraData(data)
+          setError(null)
+        },
+        (err) => {
+          console.error("Error getting location:", err);
+        }
+      );
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to fetch hora data"
       setError(errorMessage)
