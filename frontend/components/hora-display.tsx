@@ -43,7 +43,7 @@ export default function HoraDisplay() {
           const lat =  pos.coords.latitude;
           const lng = pos.coords.longitude;
 
-          const response = await fetch("http://localhost:3000/api/getHora", {
+          const response = await fetch("/api/getHora", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ time: toLocalISOString(dateTime), lng, lat }),
