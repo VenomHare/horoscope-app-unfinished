@@ -19,6 +19,20 @@ export default function HoraDisplay() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState(new Date())
+  function toLocalISOString(date = new Date()) {
+  const tzOffset = -date.getTimezoneOffset(); // in minutes
+  const diffMs = tzOffset * 60 * 1000;
+  const local = new Date(date.getTime() + diffMs);
+  const iso = local.toISOString().slice(0, -1); // remove trailing 'Z'
+  
+  // Format timezone offset as +05:30 or -04:00
+  const sign = tzOffset >= 0 ? '+' : '-';
+  const pad = n => String(Math.floor(Math.abs(n))).padStart(2, '0');
+  const hours = pad(tzOffset / 60);
+  const minutes = pad(tzOffset % 60);
+  
+  return `${iso}`;
+  }
 
   const fetchHora = async (dateTime: Date) => {
     try {
@@ -27,7 +41,7 @@ export default function HoraDisplay() {
       const response = await fetch("http://localhost:3000/getHora", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ time: dateTime.toISOString() }),
+        body: JSON.stringify({ time: toLocalISOString(dateTime) }),
       })
 
       if (!response.ok) {
@@ -50,7 +64,7 @@ export default function HoraDisplay() {
   }
 
   useEffect(() => {
-    const now = new Date()
+    const now = new Date();
     setSelectedTime(now)
     fetchHora(now)
   }, [])
