@@ -33,18 +33,20 @@ export async function getCurrentHora(lat : number, lng: number,now: Date = new D
   const hourCalculated = currentHour > sunriseHour ? currentHour - sunriseHour : 24 - sunriseHour + currentHour;
   const hashoraEnded = sunriseMinutes - currentMinutes <= 0;
 
-  const currentHoraIndex =
-    ((hourCalculated + dayIndex * 24) % Graha_sequence.length) -
-    (hashoraEnded ? 0 : 1);
-
-  console.log(currentHoraIndex);
-  console.log(
-    currentHour,
-    sunriseHour,
-    dayIndex,
-    Graha_sequence.length,
-    hashoraEnded
-  );
+  const currentHoraCalculation =
+    ((hourCalculated + dayIndex * 24) - (hashoraEnded ? 0 : 1) % Graha_sequence.length);
+  const currentHoraIndex = currentHoraCalculation % Graha_sequence.length;
+  
+  // console.log(currentHoraIndex);
+  // console.log(
+  //   (hourCalculated + (dayIndex * 24  )) - (hashoraEnded ? 0 : 1) % 7,
+  //   currentHour,
+  //   sunriseHour,
+  //   hourCalculated,
+  //   dayIndex,
+  //   Graha_sequence.length,
+  //   hashoraEnded
+  // );
 //   console.log(
 //     chalk.cyan(
 //       `Current Hora as of ${now.toLocaleDateString("en-US", {
