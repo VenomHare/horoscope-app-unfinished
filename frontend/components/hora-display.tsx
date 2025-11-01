@@ -26,10 +26,10 @@ export default function HoraDisplay() {
     const iso = local.toISOString().slice(0, -1); // remove trailing 'Z'
 
     // Format timezone offset as +05:30 or -04:00
-    const sign = tzOffset >= 0 ? '+' : '-';
-    const pad = (n: number) => String(Math.floor(Math.abs(n))).padStart(2, '0');
-    const hours = pad(tzOffset / 60);
-    const minutes = pad(tzOffset % 60);
+    // const sign = tzOffset >= 0 ? '+' : '-';
+    // const pad = (n: number) => String(Math.floor(Math.abs(n))).padStart(2, '0');
+    // const hours = pad(tzOffset / 60);
+    // const minutes = pad(tzOffset % 60);
 
     return `${iso}`;
   }
@@ -61,7 +61,8 @@ export default function HoraDisplay() {
           setError(null)
         },
         (err) => {
-          console.error("Error getting location:", err);
+          // console.error("Error getting location:", err);
+          setError("Turn on your GPS and Grant Persimission to get the sunrise time for accurate calculations")
         }
       );
     } catch (err) {
@@ -87,7 +88,7 @@ export default function HoraDisplay() {
   return (
     <div className="w-full max-w-3xl">
       <div className="text-center mb-12">
-        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-amber-300 via-purple-300 to-pink-300 bg-clip-text text-transparent mb-2 animate-pulse">
+        <h1 className="text-5xl md:text-6xl font-bold bg-linear-to-r from-amber-300 via-purple-300 to-pink-300 bg-clip-text text-transparent mb-2 animate-pulse">
           {t("title")}
         </h1>
         <p className="text-purple-300 text-lg">{t("subtitle")}</p>
