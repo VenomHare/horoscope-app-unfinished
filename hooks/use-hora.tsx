@@ -51,7 +51,7 @@ const useHora = () => {
       await fetchAllHoras(tableDate);
     };
     main();
-  }, [SunriseTime]);
+  }, [SunriseTime, tableDate]);
 
   const updateSunriseTime = async () => {
     navigator.geolocation.getCurrentPosition(async (pos) => {
