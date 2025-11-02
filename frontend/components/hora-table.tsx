@@ -66,8 +66,8 @@ export default function HoraTable() {
 
                     horaList.push({
                         hora: graha,
-                        startTime: `${start.getHours()}:${start.getMinutes().toString().padStart(2, '0')}`,
-                        endTime: `${end.getHours()}:${end.getMinutes().toString().padStart(2, '0')}`,
+                        startTime: `${start.getHours() % 12 !== 0 ? start.getHours() % 12: start.getHours() }:${start.getMinutes().toString().padStart(2, '0')}`,
+                        endTime: `${end.getHours() % 12 !== 0  ? end.getHours() % 12 : end.getHours()}:${end.getMinutes().toString().padStart(2, '0')}`,
                         isPast,
                         isCurrent,
                     });
