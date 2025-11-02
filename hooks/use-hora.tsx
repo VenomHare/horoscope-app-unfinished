@@ -47,6 +47,7 @@ const useHora = () => {
 
   useEffect(() => {
     const main = async () => {
+      handleTimeSelect(new Date());
       await fetchAllHoras(tableDate);
     };
     main();
