@@ -47,7 +47,7 @@ export default function TimePicker({ onTimeSelect, selectedTime }: TimePickerPro
     <div className="relative">
       <button
         onClick={() => setShowPicker(!showPicker)}
-        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+        className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
       >
         <Clock size={20} />
         <span>{formatTime(selectedTime)}</span>
@@ -56,7 +56,7 @@ export default function TimePicker({ onTimeSelect, selectedTime }: TimePickerPro
       </button>
 
       {showPicker && (
-        <div className="absolute top-full mt-3 right-0 bg-gradient-to-br from-slate-900 to-purple-900 border border-purple-500/30 rounded-xl p-6 shadow-2xl z-50 w-80 backdrop-blur-sm">
+        <div className="absolute top-full mt-3 right-0 bg-linear-to-br from-slate-900 to-purple-900 border border-purple-500/30 rounded-xl p-6 shadow-2xl z-50 w-80 backdrop-blur-sm">
           <div className="space-y-4">
             {/* Date Input */}
             <div>
@@ -108,7 +108,7 @@ export default function TimePicker({ onTimeSelect, selectedTime }: TimePickerPro
               </button>
               <button
                 onClick={handleApply}
-                className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg text-white font-semibold transition-colors"
+                className="flex-1 px-4 py-2 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg text-white font-semibold transition-colors"
               >
                 {t("apply") || "Apply"}
               </button>

@@ -5,6 +5,7 @@ import { useLanguage } from "@/hooks/use-language"
 import HoraCard from "./hora-card"
 import LoadingSpinner from "./loading-spinner"
 import TimePicker from "./time-picker"
+import { getCurrentHora } from "@/lib/hora-detector"
 
 interface HoraData {
   time: string
@@ -25,12 +26,6 @@ export default function HoraDisplay() {
     const local = new Date(date.getTime() + diffMs);
     const iso = local.toISOString().slice(0, -1); // remove trailing 'Z'
 
-    // Format timezone offset as +05:30 or -04:00
-    // const sign = tzOffset >= 0 ? '+' : '-';
-    // const pad = (n: number) => String(Math.floor(Math.abs(n))).padStart(2, '0');
-    // const hours = pad(tzOffset / 60);
-    // const minutes = pad(tzOffset % 60);
-
     return `${iso}`;
   }
 
@@ -40,24 +35,11 @@ export default function HoraDisplay() {
       setError(null)
       navigator.geolocation.getCurrentPosition(
         async (pos) => {
-          const lat =  pos.coords.latitude;
+          const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
 
-          const response = await fetch("/api/getHora", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ time: toLocalISOString(dateTime), lng, lat }),
-          })
-
-          if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`)
-          }
-
-          const data = await response.json()
-          if (!data || !data.hora) {
-            throw new Error("Invalid response from server")
-          }
-          setHoraData(data)
+          const data = await getCurrentHora(lat, lng, dateTime);
+          setHoraData(data);
           setError(null)
         },
         (err) => {
@@ -86,9 +68,9 @@ export default function HoraDisplay() {
   }
 
   return (
-    <div className="w-full max-w-3xl">
+    <div className="w-full max-w-3xl mt-[10dvh]">
       <div className="text-center mb-12">
-        <h1 className="text-5xl md:text-6xl font-bold bg-linear-to-r from-amber-300 via-purple-300 to-pink-300 bg-clip-text text-transparent mb-2 animate-pulse">
+        <h1 className="pt-4 text-5xl md:text-6xl font-bold bg-linear-to-r from-amber-300 via-purple-300 to-pink-300 bg-clip-text text-transparent mb-2 animate-pulse">
           {t("title")}
         </h1>
         <p className="text-purple-300 text-lg">{t("subtitle")}</p>
@@ -117,6 +99,8 @@ export default function HoraDisplay() {
       )}
 
       {!loading && !error && horaData && <HoraCard horaData={horaData} />}
+
+      {/* {!loading && !error && horaData && <HoraTable selectedDate={selectedTime} />} */}
 
       {!loading && !error && !horaData && (
         <div className="bg-yellow-500/10 border border-yellow-500/50 rounded-xl p-6 text-center backdrop-blur-sm">

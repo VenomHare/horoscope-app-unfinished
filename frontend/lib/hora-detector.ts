@@ -21,11 +21,12 @@ async function getSunriseTime(lat: number, lng: number) {
   return suntime;
 }
 
-export async function getCurrentHora(lat : number, lng: number,now: Date = new Date()) {
+export async function getCurrentHora(lat : number, lng: number, now?: Date) {
   const todays_Sunrise_time = await getSunriseTime(lat, lng);
-  const dayIndex = now.getDay();
-  const currentHour = now.getHours();
-  const currentMinutes = now.getMinutes();
+  const time : Date = now || todays_Sunrise_time;
+  const dayIndex = time.getDay();
+  const currentHour = time.getHours();
+  const currentMinutes = time.getMinutes();
 
   const sunriseHour = todays_Sunrise_time.getHours();
   const sunriseMinutes = todays_Sunrise_time.getMinutes();
@@ -60,12 +61,15 @@ export async function getCurrentHora(lat : number, lng: number,now: Date = new D
 //   );
   return {
     time: `${currentHour}:${currentMinutes.toString().padStart(2, "0")}`,
-    day: now.toLocaleDateString("en-US", {
+    day: time.toLocaleDateString("en-US", {
       weekday: "long",
     }),
     hora: Graha_sequence[currentHoraIndex],
     endTime: `${
       hashoraEnded ? currentHour + 1 : currentHour
     }:${sunriseMinutes}`,
+    sunriseTime: todays_Sunrise_time,
+    currentHoraIndex,
+    Graha_sequence
   };
 }
