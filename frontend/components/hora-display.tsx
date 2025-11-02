@@ -1,71 +1,21 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useLanguage } from "@/hooks/use-language"
-import HoraCard from "./hora-card"
-import LoadingSpinner from "./loading-spinner"
-import TimePicker from "./time-picker"
-import { getCurrentHora } from "@/lib/hora-detector"
-
-interface HoraData {
-  time: string
-  day: string
-  hora: string
-  endTime: string
-}
+import { useLanguage } from "@/hooks/use-language";
+import HoraCard from "./hora-card";
+import LoadingSpinner from "./loading-spinner";
+import TimePicker from "./time-picker";
+import useHora from "@/hooks/use-hora";
 
 export default function HoraDisplay() {
-  const { t } = useLanguage()
-  const [horaData, setHoraData] = useState<HoraData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedTime, setSelectedTime] = useState(new Date())
-  function toLocalISOString(date = new Date()) {
-    const tzOffset = -date.getTimezoneOffset(); // in minutes
-    const diffMs = tzOffset * 60 * 1000;
-    const local = new Date(date.getTime() + diffMs);
-    const iso = local.toISOString().slice(0, -1); // remove trailing 'Z'
+  const { t } = useLanguage();
 
-    return `${iso}`;
-  }
-
-  const fetchHora = async (dateTime: Date) => {
-    try {
-      setLoading(true)
-      setError(null)
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-
-          const data = await getCurrentHora(lat, lng, dateTime);
-          setHoraData(data);
-          setError(null)
-        },
-        (err) => {
-          // console.error("Error getting location:", err);
-          setError("Turn on your GPS and Grant Persimission to get the sunrise time for accurate calculations")
-        }
-      );
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to fetch hora data"
-      setError(errorMessage)
-      setHoraData(null)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    const now = new Date();
-    setSelectedTime(now)
-    fetchHora(now)
-  }, [])
-
-  const handleTimeSelect = (newTime: Date) => {
-    setSelectedTime(newTime)
-    fetchHora(newTime)
-  }
+  const { 
+    loading, 
+    error, 
+    specificHoraData, 
+    selectedTime, 
+    handleTimeSelect 
+  } = useHora();
 
   return (
     <div className="w-full max-w-3xl mt-[10dvh]">
@@ -77,17 +27,23 @@ export default function HoraDisplay() {
       </div>
 
       <div className="flex justify-center mb-8">
-        <TimePicker onTimeSelect={handleTimeSelect} selectedTime={selectedTime} />
+        <TimePicker
+          onTimeSelect={handleTimeSelect}
+          selectedTime={selectedTime}
+        />
       </div>
 
       {loading && <LoadingSpinner />}
 
       {error && (
         <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-6 text-center backdrop-blur-sm">
-          <p className="text-red-300 font-semibold mb-2">{t("error")}: Connection Issue</p>
+          <p className="text-red-300 font-semibold mb-2">
+            {t("error")}: Connection Issue
+          </p>
           <p className="text-red-200 text-sm mb-4">{error}</p>
           <p className="text-red-200/70 text-xs">
-            {t("tryAgain") || "Make sure the server is running at http://localhost:3000"}
+            {t("tryAgain") ||
+              "Make sure the server is running at http://localhost:3000"}
           </p>
           <button
             onClick={() => handleTimeSelect(selectedTime)}
@@ -98,17 +54,19 @@ export default function HoraDisplay() {
         </div>
       )}
 
-      {!loading && !error && horaData && <HoraCard horaData={horaData} />}
+      {!loading && !error && specificHoraData && (
+        <HoraCard horaData={specificHoraData} />
+      )}
 
       {/* {!loading && !error && horaData && <HoraTable selectedDate={selectedTime} />} */}
 
-      {!loading && !error && !horaData && (
+      {!loading && !error && !specificHoraData && (
         <div className="bg-yellow-500/10 border border-yellow-500/50 rounded-xl p-6 text-center backdrop-blur-sm">
           <p className="text-yellow-300">{t("noData")}</p>
         </div>
       )}
 
-      {!loading && !error && horaData && (
+      {!loading && !error && specificHoraData && (
         <div className="mt-12 text-center text-sm text-purple-400">
           <p>
             {t("lastUpdated")}: {selectedTime.toLocaleTimeString()}
@@ -116,5 +74,5 @@ export default function HoraDisplay() {
         </div>
       )}
     </div>
-  )
+  );
 }
