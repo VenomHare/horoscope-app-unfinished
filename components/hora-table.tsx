@@ -190,13 +190,13 @@ export default function HoraTable() {
           <table className="w-full">
             <thead>
               <tr className="bg-linear-to-r from-purple-950/80 to-pink-950/80 border-b border-purple-500/20">
-                <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
+                {/* <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
                   {language === "en"
                     ? "Hour"
                     : language === "hi"
                     ? "घंटा"
                     : "तास"}
-                </th>
+                </th> */}
                 <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
                   {language === "en"
                     ? "Start Time"
@@ -218,13 +218,13 @@ export default function HoraTable() {
                     ? "ग्रह"
                     : "ग्रह"}
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
+                {/* <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
                   {language === "en"
                     ? "Status"
                     : language === "hi"
                     ? "स्थिति"
                     : "स्थिती"}
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
@@ -247,12 +247,12 @@ export default function HoraTable() {
                     key={index}
                     className={`${rowBg} border-b border-purple-500/10 transition-all duration-200 hover:shadow-lg hover:shadow-purple-500/10`}
                   >
-                    <td className="px-4 sm:px-6 py-4 font-semibold text-white">
+                    {/* <td className="px-4 sm:px-6 py-4 font-semibold text-white">
                       {String(index).padStart(2, "0")}
                       {hora.isCurrent && (
                         <span className="ml-2 inline-block w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
                       )}
-                    </td>
+                    </td> */}
                     <td className="px-4 sm:px-6 py-4 text-sm text-white/80 font-mono">
                       {hora.startTime}
                     </td>
@@ -271,7 +271,7 @@ export default function HoraTable() {
                         </span>
                       </div>
                     </td>
-                    <td
+                    {/* <td
                       className={`px-4 sm:px-6 py-4 text-xs font-bold uppercase tracking-wide ${statusColor}`}
                     >
                       {hora.isPast
@@ -291,7 +291,7 @@ export default function HoraTable() {
                         : language === "hi"
                         ? "आने वाले"
                         : "येणार"}
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })}
