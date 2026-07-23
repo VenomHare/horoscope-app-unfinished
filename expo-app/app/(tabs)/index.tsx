@@ -12,11 +12,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { getAppTheme } from '@/constants/theme';
+import { AppThemes, getAppTheme } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { getGrahaName, grahaColors, grahaSymbols } from '@/lib/graha';
 import { horaDetector, type HoraDay } from '@/lib/hora-detector';
 import { t } from '@/locales/translations';
+import { getCachedHoraDay, setCachedHoraDay } from '@/services/cache';
 import { ensureStickyHoraNotification, refreshHoraNotifications } from '@/services/notifications';
 import { getCurrentCoordinates, syncPermissionState } from '@/services/permissions';
 import { syncWidgetSnapshot } from '@/services/widget-sync';
@@ -49,7 +50,7 @@ export default function HomeScreen() {
   const endAlerts = useAppStore((state) => state.endAlerts);
   const stickyNotificationsEnabled = useAppStore((state) => state.stickyNotificationsEnabled);
 
-  const loadHora = useCallback(async () => {
+  const loadHora = useCallback(async (forceRefresh = false) => {
     setIsLoading(true);
     setError(null);
 
@@ -62,9 +63,23 @@ export default function HomeScreen() {
       }
 
       const coordinates = await getCurrentCoordinates();
+      
+      // Try to use cached data if not forcing refresh
+      if (!forceRefresh) {
+        const cachedDay = await getCachedHoraDay();
+        if (cachedDay) {
+          setDay(cachedDay);
+          await syncWidgetSnapshot(cachedDay, highlightedHoras, language);
+          await refreshHoraNotifications(cachedDay, language);
+          return;
+        }
+      }
+
+      // Calculate fresh data
       const nextDay = await horaDetector.getHoraDay(coordinates);
       setDay(nextDay);
-      await syncWidgetSnapshot(nextDay, highlightedHoras);
+      await setCachedHoraDay(nextDay);
+      await syncWidgetSnapshot(nextDay, highlightedHoras, language);
       await refreshHoraNotifications(nextDay, language);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t(language, 'noLocation'));
@@ -75,13 +90,13 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      loadHora();
+      loadHora(false);
     }, [loadHora]),
   );
 
   useEffect(() => {
     if (day) {
-      syncWidgetSnapshot(day, highlightedHoras);
+      syncWidgetSnapshot(day, highlightedHoras, language);
       refreshHoraNotifications(day, language);
     }
   }, [day, endAlerts, highlightedHoras, language, startAlerts, stickyNotificationsEnabled]);
@@ -122,7 +137,7 @@ export default function HomeScreen() {
     <SafeAreaView style={[styles.screen, { backgroundColor: theme.screen }]}>
       <ScrollView
         contentContainerStyle={styles.content}
-        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={loadHora} />}>
+        refreshControl={<RefreshControl refreshing={isLoading} onRefresh={() => loadHora(true)} />}>
         <View style={styles.header}>
           <Text style={[styles.appTitle, { color: theme.text }]}>{t(language, 'appTitle')}</Text>
           <Text style={[styles.date, { color: theme.textMuted }]}>
@@ -170,7 +185,7 @@ export default function HomeScreen() {
         {error && (
           <View style={[styles.errorCard, { backgroundColor: theme.dangerSoft }]}>
             <Text style={[styles.errorText, { color: theme.danger }]}>{error}</Text>
-            <Pressable style={[styles.retryButton, { backgroundColor: theme.danger }]} onPress={loadHora}>
+            <Pressable style={[styles.retryButton, { backgroundColor: theme.danger }]} onPress={() => loadHora(true)}>
               <Text style={[styles.retryText, { color: theme.inverseText }]}>
                 {t(language, 'retry')}
               </Text>
@@ -214,14 +229,14 @@ export default function HomeScreen() {
                   </Text>
                 </View>
                 <View style={styles.rowBody}>
-                  <Text style={[styles.rowTitle, { color: theme.text }]}>
+                  <Text style={[styles.rowTitle, { color: highlighted ? AppThemes.light.text : theme.text }]}>
                     {getGrahaName(period.graha, language)}
                   </Text>
-                  <Text style={[styles.rowMeta, { color: theme.textMuted }]}>
+                  <Text style={[styles.rowMeta, { color: highlighted ? AppThemes.light.textMuted : theme.textMuted }]}>
                     {formatTime(period.start)} - {formatTime(period.end)}
                   </Text>
                 </View>
-                <Text style={[styles.rowIndex, { color: theme.textMuted }]}>
+                <Text style={[styles.rowIndex, { color: highlighted ? AppThemes.light.textMuted : theme.textMuted }]}>
                   {String(period.index + 1).padStart(2, '0')}
                 </Text>
               </View>

@@ -21,10 +21,13 @@ async function getNotifications(): Promise<NotificationsModule | null> {
 
   notifications.setNotificationHandler({
     handleNotification: async () => ({
-      shouldPlaySound: false,
+      shouldPlaySound: true,
       shouldSetBadge: false,
       shouldShowBanner: true,
       shouldShowList: true,
+      ...(Platform.OS === 'android' && {
+        priority: notifications.AndroidNotificationPriority.MAX,
+      }),
     }),
   });
 
@@ -84,6 +87,9 @@ async function scheduleForPeriods(
               title: `${grahaSymbols[period.graha]} ${getGrahaName(period.graha, language)}`,
               body: makeAlertBody(period, startPreference.offsetMinutes, 'start', language),
               data: { screen: 'home', graha: period.graha, kind: 'start' },
+              ...(Platform.OS === 'android' && {
+                priority: notifications.AndroidNotificationPriority.MAX,
+              }),
             },
             trigger: {
               type: notifications.SchedulableTriggerInputTypes.DATE,
@@ -104,6 +110,9 @@ async function scheduleForPeriods(
               title: `${getGrahaName(period.graha, language)} ${t(language, 'ends')}`,
               body: makeAlertBody(period, endPreference.offsetMinutes, 'end', language),
               data: { screen: 'home', graha: period.graha, kind: 'end' },
+              ...(Platform.OS === 'android' && {
+                priority: notifications.AndroidNotificationPriority.MAX,
+              }),
             },
             trigger: {
               type: notifications.SchedulableTriggerInputTypes.DATE,
@@ -146,6 +155,9 @@ async function scheduleStickyNotification(
       sticky: true,
       autoDismiss: false,
       data: { screen: 'home', kind: 'sticky', graha: day.current.graha },
+      ...(Platform.OS === 'android' && {
+        priority: notifications.AndroidNotificationPriority.MAX,
+      }),
     },
     trigger: null,
   });

@@ -1,6 +1,6 @@
 export const translations = {
   mr: {
-    appTitle: 'होरा डिटेक्टर',
+    appTitle: 'होराष्टक',
     permissionTitle: 'परवानग्या सुरू करा',
     permissionBody:
       'अचूक सूर्योदय वेळ आणि वर्तमान होरा काढण्यासाठी स्थान परवानगी आवश्यक आहे. निवडलेल्या होरासाठी सूचना पाठवण्यासाठी सूचना परवानगी आवश्यक आहे.',
@@ -36,9 +36,10 @@ export const translations = {
     grahaShani: 'शनि',
     grahaGuru: 'गुरु',
     grahaMangal: 'मंगळ',
+    theme: 'थीम',
   },
   en: {
-    appTitle: 'Hora Detector',
+    appTitle: 'Horashtak',
     permissionTitle: 'Enable permissions',
     permissionBody:
       'Location is required to calculate the precise sunrise time and active hora. Notifications are required for your selected hora alerts.',
@@ -53,7 +54,7 @@ export const translations = {
     sunrise: 'Sunrise',
     starts: 'Starts',
     ends: 'Ends',
-    todayTable: 'Today hora table',
+    todayTable: "Today's Hora Table",
     highlightList: 'Highlight list',
     startAlerts: 'Start alerts',
     endAlerts: 'End alerts',
@@ -74,9 +75,10 @@ export const translations = {
     grahaShani: 'Shani',
     grahaGuru: 'Guru',
     grahaMangal: 'Mangal',
+    theme: 'Theme',
   },
   hi: {
-    appTitle: 'होरा डिटेक्टर',
+    appTitle: 'होराष्टक',
     permissionTitle: 'अनुमतियां चालू करें',
     permissionBody:
       'सटीक सूर्योदय समय और वर्तमान होरा निकालने के लिए स्थान अनुमति चाहिए. चुनी गई होरा सूचनाओं के लिए सूचना अनुमति चाहिए.',
@@ -112,6 +114,7 @@ export const translations = {
     grahaShani: 'शनि',
     grahaGuru: 'गुरु',
     grahaMangal: 'मंगल',
+    theme: 'थीम',
   },
 } as const;
 

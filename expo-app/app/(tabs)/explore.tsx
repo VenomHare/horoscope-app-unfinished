@@ -1,13 +1,17 @@
 import type React from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect } from 'react';
 
-import { getAppTheme } from '@/constants/theme';
+import { getAppTheme, Theme, ThemeOptions } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { getGrahaName, grahaColors, grahaSymbols } from '@/lib/graha';
 import { GRAHA_SEQUENCE, type Graha } from '@/lib/hora-detector';
 import { t, type AppLanguage } from '@/locales/translations';
 import { useAppStore } from '@/store/app-store';
+import { MaterialIcons } from '@expo/vector-icons';
+import { getCachedHoraDay } from '@/services/cache';
+import { refreshHoraNotifications } from '@/services/notifications';
 
 const languages: { label: string; value: AppLanguage }[] = [
   { label: 'मराठी', value: 'mr' },
@@ -96,6 +100,8 @@ function AlertRow({ graha, kind }: { graha: Graha; kind: 'start' | 'end' }) {
 }
 
 export default function PersonalizeScreen() {
+  const selectedTheme = useAppStore((state) => state.theme);
+  const setSelectedTheme = useAppStore((state) => state.setSelectedTheme);
   const language = useAppStore((state) => state.language);
   const setLanguage = useAppStore((state) => state.setLanguage);
   const highlightedHoras = useAppStore((state) => state.highlightedHoras);
@@ -103,11 +109,48 @@ export default function PersonalizeScreen() {
   const toggleHighlightedHora = useAppStore((state) => state.toggleHighlightedHora);
   const stickyNotificationsEnabled = useAppStore((state) => state.stickyNotificationsEnabled);
   const setStickyNotificationsEnabled = useAppStore((state) => state.setStickyNotificationsEnabled);
+  const startAlerts = useAppStore((state) => state.startAlerts);
+  const endAlerts = useAppStore((state) => state.endAlerts);
+
+  // Refresh notifications when alert preferences change
+  useEffect(() => {
+    const updateNotifications = async () => {
+      const cachedDay = await getCachedHoraDay();
+      if (cachedDay) {
+        await refreshHoraNotifications(cachedDay, language);
+      }
+    };
+
+    updateNotifications();
+  }, [startAlerts, endAlerts, language]);
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: theme.screen }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={[styles.title, { color: theme.text }]}>{t(language, 'personalize')}</Text>
+        
+        <Section title={t(language, 'language')}>
+          <View style={[styles.languageRow, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            {languages.map((item) => (
+              <Pressable
+                key={item.value}
+                style={[
+                  styles.languageButton,
+                  language === item.value && { backgroundColor: theme.inverse },
+                ]}
+                onPress={() => setLanguage(item.value)}>
+                <Text
+                  style={[
+                    styles.languageText,
+                    { color: theme.textMuted },
+                    language === item.value && { color: theme.inverseText },
+                  ]}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </Section>
 
         <Section title={t(language, 'highlightList')}>
           <View style={styles.chipGrid}>
@@ -135,26 +178,30 @@ export default function PersonalizeScreen() {
           ))}
         </Section>
 
-        <Section title={t(language, 'language')}>
+        <Section title={t(language, 'theme')}>
           <View style={[styles.languageRow, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-            {languages.map((item) => (
-              <Pressable
-                key={item.value}
-                style={[
-                  styles.languageButton,
-                  language === item.value && { backgroundColor: theme.inverse },
-                ]}
-                onPress={() => setLanguage(item.value)}>
-                <Text
+            {ThemeOptions.map((item : Theme) => {
+              let iconName: keyof typeof MaterialIcons.glyphMap = 'settings';
+              if (item === 'light') iconName = 'wb-sunny';
+              else if (item === 'dark') iconName = 'nightlight-round';
+              else if (item === 'system') iconName = 'brightness-auto';
+
+              return (
+                <Pressable
+                  key={item}
                   style={[
-                    styles.languageText,
-                    { color: theme.textMuted },
-                    language === item.value && { color: theme.inverseText },
-                  ]}>
-                  {item.label}
-                </Text>
-              </Pressable>
-            ))}
+                    styles.languageButton,
+                    selectedTheme === item && { backgroundColor: theme.inverse },
+                  ]}
+                  onPress={() => setSelectedTheme(item)}>
+                  <MaterialIcons
+                    name={iconName}
+                    size={24}
+                    color={selectedTheme === item ? theme.inverseText : theme.textMuted}
+                  />
+                </Pressable>
+              );
+            })}
           </View>
         </Section>
 

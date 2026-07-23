@@ -8,6 +8,9 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { syncPermissionState } from '@/services/permissions';
+// Import background tasks to register them at module scope
+import '@/services/background-tasks';
+import { startTimeChangeListener } from '@/services/time-change-listener';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -15,6 +18,7 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
   const [fontsLoaded] = useFonts({
     'Switzer-Regular': require('@/switzer/fonts/Switzer-Regular.ttf'),
     'Switzer-Semibold': require('@/switzer/fonts/Switzer-Semibold.ttf'),
@@ -24,6 +28,9 @@ export default function RootLayout() {
 
   useEffect(() => {
     syncPermissionState();
+    startTimeChangeListener().catch((error) => {
+      console.error('Failed to start time change listener:', error);
+    });
   }, []);
 
   if (!fontsLoaded) {
@@ -38,7 +45,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         </Stack>
-        <StatusBar style="auto" />
+        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
       </ThemeProvider>
     </SafeAreaProvider>
   );

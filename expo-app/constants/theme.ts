@@ -100,3 +100,7 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+export const ThemeOptions = ["light", "system", "dark"] as const;
+export type Theme = (typeof ThemeOptions)[number];
+

@@ -82,9 +82,9 @@ function withAndroidHoraWidget(config) {
         path.join(xmlDir, 'hora_widget_info.xml'),
         `<?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="180dp"
+    android:minWidth="90dp"
     android:minHeight="90dp"
-    android:targetCellWidth="4"
+    android:targetCellWidth="2"
     android:targetCellHeight="2"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/hora_widget"
@@ -96,42 +96,62 @@ function withAndroidHoraWidget(config) {
       writeIfMissing(
         path.join(layoutDir, 'hora_widget.xml'),
         `<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/hora_widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical"
-    android:padding="16dp"
     android:background="@drawable/hora_widget_background">
 
+    <!-- Background Icon on the right side -->
     <TextView
-        android:id="@+id/hora_widget_title"
+        android:id="@+id/hora_widget_background_icon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hora_widget_title"
-        android:textColor="#FFF8EA"
-        android:textSize="13sp"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:text="@string/hora_widget_icon_placeholder"
+        android:textSize="80sp"
+        android:textColor="#2A2119"
+        android:alpha="0.15"
+        android:gravity="end|center_vertical"
+        android:paddingEnd="8dp"
+        android:fontFamily="sans-serif" />
 
-    <TextView
-        android:id="@+id/hora_widget_hora"
+    <!-- Main content -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/hora_widget_placeholder"
-        android:textColor="#FFF8EA"
-        android:textSize="26sp"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:padding="12dp">
 
-    <TextView
-        android:id="@+id/hora_widget_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:text="@string/hora_widget_time_placeholder"
-        android:textColor="#F1B84B"
-        android:textSize="13sp" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/hora_widget_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hora_widget_title"
+            android:textColor="#2A2119"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/hora_widget_hora"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/hora_widget_placeholder"
+            android:textColor="#2A2119"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/hora_widget_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="@string/hora_widget_time_placeholder"
+            android:textColor="#806C55"
+            android:textSize="11sp" />
+    </LinearLayout>
+</FrameLayout>
 `,
       );
 
@@ -139,8 +159,8 @@ function withAndroidHoraWidget(config) {
         path.join(drawableDir, 'hora_widget_background.xml'),
         `<?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#2A2119" />
-    <corners android:radius="24dp" />
+    <solid android:color="#FFF8EA" />
+    <corners android:radius="20dp" />
 </shape>
 `,
       );
@@ -171,7 +191,196 @@ function withAndroidHoraWidget(config) {
           );
         }
 
+        if (!nextStrings.includes('name="hora_widget_icon_placeholder"')) {
+          nextStrings = nextStrings.replace(
+            '</resources>',
+            '    <string name="hora_widget_icon_placeholder">☉</string>\n</resources>',
+          );
+        }
+
         fs.writeFileSync(stringsPath, nextStrings);
+      }
+
+      // Add Native Widget implementation (Kotlin / Java)
+      const packageName = config.android?.package || 'com.venomhare.horashtak';
+      const packagePath = packageName.replace(/\./g, '/');
+      const javaDir = path.join(projectRoot, 'app', 'src', 'main', 'java', packagePath);
+      ensureDir(javaDir);
+
+      // Write HoraWidgetReceiver.kt
+      const receiverContent = `package ${packageName}
+
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.Context
+import android.graphics.Color
+import android.widget.RemoteViews
+import ${packageName}.R
+
+class HoraWidgetReceiver : AppWidgetProvider() {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
+        val prefs = context.getSharedPreferences("hora_widget_prefs", Context.MODE_PRIVATE)
+        val title = prefs.getString("title", "Current Hora")
+        val grahaName = prefs.getString("graha_name", "Hora Detector")
+        val grahaSymbol = prefs.getString("graha_symbol", "")
+        val timeRange = prefs.getString("time_range", "Open app to update")
+        val highlighted = prefs.getBoolean("highlighted", false)
+        val backgroundIcon = prefs.getString("background_icon", "☉")
+        val isDarkTheme = prefs.getBoolean("is_dark_theme", false)
+
+        for (appWidgetId in appWidgetIds) {
+            val views = RemoteViews(context.packageName, R.layout.hora_widget)
+            
+            views.setTextViewText(R.id.hora_widget_title, title)
+            views.setTextViewText(R.id.hora_widget_background_icon, backgroundIcon)
+            
+            val displayHora = if (!grahaSymbol.isNullOrEmpty()) "$grahaSymbol $grahaName" else grahaName
+            views.setTextViewText(R.id.hora_widget_hora, displayHora)
+            views.setTextViewText(R.id.hora_widget_time, timeRange)
+
+            // Theme-aware colors
+            if (isDarkTheme) {
+                views.setTextColor(R.id.hora_widget_title, Color.parseColor("#FFF8EA"))
+                views.setTextColor(R.id.hora_widget_hora, Color.parseColor("#FFF8EA"))
+                views.setTextColor(R.id.hora_widget_time, Color.parseColor("#806C55"))
+                views.setTextColor(R.id.hora_widget_background_icon, Color.parseColor("#FFF8EA"))
+                views.setInt(R.id.hora_widget_background_icon, "setAlpha", 25) // 0.15 * 255 ≈ 38
+            } else {
+                views.setTextColor(R.id.hora_widget_title, Color.parseColor("#2A2119"))
+                views.setTextColor(R.id.hora_widget_hora, Color.parseColor("#2A2119"))
+                views.setTextColor(R.id.hora_widget_time, Color.parseColor("#806C55"))
+                views.setTextColor(R.id.hora_widget_background_icon, Color.parseColor("#2A2119"))
+                views.setInt(R.id.hora_widget_background_icon, "setAlpha", 38) // 0.15 * 255 ≈ 38
+            }
+
+            if (highlighted) {
+                views.setTextColor(R.id.hora_widget_time, Color.parseColor("#F0A51A"))
+            }
+
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+    }
+}
+`;
+      fs.writeFileSync(path.join(javaDir, 'HoraWidgetReceiver.kt'), receiverContent);
+
+      // Write HoraWidgetModule.kt
+      const moduleContent = `package ${packageName}
+
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
+
+class HoraWidgetModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+    override fun getName(): String {
+        return "HoraWidgetModule"
+    }
+
+    @ReactMethod
+    fun syncWidget(title: String, grahaName: String, grahaSymbol: String, timeRange: String, highlighted: Boolean, backgroundIcon: String, isDarkTheme: Boolean) {
+        val context = reactApplicationContext
+        val prefs = context.getSharedPreferences("hora_widget_prefs", Context.MODE_PRIVATE)
+        prefs.edit().apply {
+            putString("title", title)
+            putString("graha_name", grahaName)
+            putString("graha_symbol", grahaSymbol)
+            putString("time_range", timeRange)
+            putBoolean("highlighted", highlighted)
+            putString("background_icon", backgroundIcon)
+            putBoolean("is_dark_theme", isDarkTheme)
+            apply()
+        }
+
+        // Trigger widget update
+        val intent = Intent(context, HoraWidgetReceiver::class.java).apply {
+            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        }
+        val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
+            ComponentName(context, HoraWidgetReceiver::class.java)
+        )
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+        context.sendBroadcast(intent)
+    }
+}
+`;
+      fs.writeFileSync(path.join(javaDir, 'HoraWidgetModule.kt'), moduleContent);
+
+      // Write HoraWidgetPackage.kt
+      const packageContent = `package ${packageName}
+
+import com.facebook.react.ReactPackage
+import com.facebook.react.bridge.NativeModule
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.uimanager.ViewManager
+
+class HoraWidgetPackage : ReactPackage {
+    override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
+        return listOf(HoraWidgetModule(reactContext))
+    }
+
+    override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
+        return emptyList()
+    }
+}
+`;
+      fs.writeFileSync(path.join(javaDir, 'HoraWidgetPackage.kt'), packageContent);
+
+      // Modify MainApplication.kt to register the package
+      const mainAppKtPath = path.join(javaDir, 'MainApplication.kt');
+      if (fs.existsSync(mainAppKtPath)) {
+        let content = fs.readFileSync(mainAppKtPath, 'utf8');
+        if (!content.includes('HoraWidgetPackage()')) {
+          const packageImport = `import ${packageName}.HoraWidgetPackage`;
+          if (!content.includes(packageImport)) {
+            content = content.replace(/package .*/, `$&\n\n${packageImport}`);
+          }
+          
+          if (content.includes('// add(MyReactNativePackage())')) {
+            content = content.replace(
+              '// add(MyReactNativePackage())',
+              `// add(MyReactNativePackage())\n              add(HoraWidgetPackage())`
+            );
+          } else {
+            content = content.replace(
+              /(PackageList\(this\)\.packages.*?\.apply\s*\{)/,
+              `$&\n              add(HoraWidgetPackage())`
+            );
+          }
+          fs.writeFileSync(mainAppKtPath, content);
+        }
+      }
+
+      // Modify MainApplication.java (fallback)
+      const mainAppJavaPath = path.join(javaDir, 'MainApplication.java');
+      if (fs.existsSync(mainAppJavaPath)) {
+        let content = fs.readFileSync(mainAppJavaPath, 'utf8');
+        if (!content.includes('HoraWidgetPackage()')) {
+          const packageImport = `import ${packageName}.HoraWidgetPackage;`;
+          if (!content.includes(packageImport)) {
+            content = content.replace(/package .*/, `$&\n\n${packageImport}`);
+          }
+
+          if (content.includes('// packages.add(new MyReactNativePackage());')) {
+            content = content.replace(
+              '// packages.add(new MyReactNativePackage());',
+              `// packages.add(new MyReactNativePackage());\n      packages.add(new HoraWidgetPackage());`
+            );
+          } else {
+            content = content.replace(
+              /(List<ReactPackage>\s*packages\s*=\s*new\s*PackageList\(this\)\.getPackages\(\);)/,
+              `$&\n      packages.add(new HoraWidgetPackage());`
+            );
+          }
+          fs.writeFileSync(mainAppJavaPath, content);
+        }
       }
 
       return modConfig;

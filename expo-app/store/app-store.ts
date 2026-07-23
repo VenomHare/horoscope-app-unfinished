@@ -4,6 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import type { Graha } from '@/lib/hora-detector';
 import type { AppLanguage } from '@/locales/translations';
+import { Theme } from '@/constants/theme';
 
 export type AlertPreference = {
   enabled: boolean;
@@ -19,6 +20,7 @@ type AppState = {
   hasHydrated: boolean;
   permissions: PermissionState;
   language: AppLanguage;
+  theme: Theme;
   highlightedHoras: Graha[];
   startAlerts: Partial<Record<Graha, AlertPreference>>;
   endAlerts: Partial<Record<Graha, AlertPreference>>;
@@ -30,6 +32,7 @@ type AppState = {
   toggleAlert: (kind: 'start' | 'end', graha: Graha) => void;
   setAlertOffset: (kind: 'start' | 'end', graha: Graha, offsetMinutes: number) => void;
   setStickyNotificationsEnabled: (value: boolean) => void;
+  setSelectedTheme: (value: Theme) => void,
 };
 
 const defaultAlert: AlertPreference = {
@@ -49,11 +52,12 @@ export const useAppStore = create<AppState>()(
         locationGranted: false,
         notificationsGranted: false,
       },
+      theme: "system",
       language: 'en',
       highlightedHoras: [],
       startAlerts: {},
       endAlerts: {},
-      stickyNotificationsEnabled: false,
+      stickyNotificationsEnabled: true,
       setHydrated: (value) => set({ hasHydrated: value }),
       setPermissions: (permissions) => set({ permissions }),
       setLanguage: (language) => set({ language }),
@@ -88,6 +92,7 @@ export const useAppStore = create<AppState>()(
           };
         }),
       setStickyNotificationsEnabled: (value) => set({ stickyNotificationsEnabled: value }),
+      setSelectedTheme: (value) => set({ theme: value})
     }),
     {
       name: 'hora-detector-store',
@@ -95,6 +100,7 @@ export const useAppStore = create<AppState>()(
       onRehydrateStorage: () => (state) => state?.setHydrated(true),
       partialize: (state) => ({
         permissions: state.permissions,
+        theme: state.theme,
         language: state.language,
         highlightedHoras: state.highlightedHoras,
         startAlerts: state.startAlerts,
