@@ -1,16 +1,44 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { LanguageProvider } from "@/hooks/use-language"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
-
 export const metadata: Metadata = {
-  title: "Hora Detector",
-  description: "Made by Sarthak",
+  metadataBase: new URL("https://hora-detector.vercel.app"),
+  title: {
+    default: "Horashtak",
+    template: "%s | Horashtak",
+  },
+  description: "Find the current hora and daily planetary hour schedule.",
+  applicationName: "Horashtak",
+  appleWebApp: {
+    title: "Horashtak",
+  },
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
+  openGraph: {
+    title: "Horashtak",
+    description: "Find the current hora and daily planetary hour schedule.",
+    siteName: "Horashtak",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1254,
+        height: 1254,
+        alt: "Horashtak logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "Horashtak",
+    description: "Find the current hora and daily planetary hour schedule.",
+    images: ["/logo.png"],
+  },
 }
 
 export default function RootLayout({

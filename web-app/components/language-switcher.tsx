@@ -13,16 +13,16 @@ export default function LanguageSwitcher() {
   ]
 
   return (
-    <div className="flex items-center gap-2 bg-slate-900/60 backdrop-blur-md border border-purple-500/30 rounded-full p-1">
-      <Globe className="w-4 h-4 text-purple-400 ml-3" />
+    <div className="ml-auto flex w-fit items-center gap-1 rounded-[18px] border border-[#ECD8B6] bg-[#FFF8EA] p-1 shadow-sm">
+      <Globe className="ml-3 size-4 text-[#806C55]" />
       {languages.map((lang) => (
         <button
           key={lang.code}
           onClick={() => setLanguage(lang.code as "en" | "hi" | "mr")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+          className={`rounded-[14px] px-4 py-2 text-sm font-bold transition-all duration-200 ${
             language === lang.code
-              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-              : "text-purple-300 hover:text-purple-100"
+              ? "bg-[#2A2119] text-[#FFF8EA]"
+              : "text-[#806C55] hover:bg-[#F0E2CC] hover:text-[#281B10]"
           }`}
         >
           {lang.label}

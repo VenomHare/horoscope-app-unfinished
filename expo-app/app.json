@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Horashtak",
-    "slug": "hora-detector",
+    "slug": "horashtak",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSUserNotificationsUsageDescription": "Hora Detector sends alerts before selected hora starts and ends."
+        "NSUserNotificationsUsageDescription": "Horashtak sends alerts before selected hora starts and ends."
       },
       "bundleIdentifier": "com.venomhare.horashtak"
     },
@@ -39,7 +39,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Allow Hora Detector to use your location to calculate sunrise and the active hora."
+          "locationWhenInUsePermission": "Allow Horashtak to use your location to calculate sunrise and the active hora."
         }
       ],
       [

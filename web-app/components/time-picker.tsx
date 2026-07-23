@@ -47,7 +47,7 @@ export default function TimePicker({ onTimeSelect, selectedTime }: TimePickerPro
     <div className="relative">
       <button
         onClick={() => setShowPicker(!showPicker)}
-        className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+        className="flex flex-wrap items-center justify-center gap-2 rounded-[18px] border border-[#ECD8B6] bg-[#FFF8EA] px-5 py-3 font-bold text-[#281B10] shadow-sm transition-all duration-200 hover:border-[#D28719]"
       >
         <Clock size={20} />
         <span>{formatTime(selectedTime)}</span>
@@ -56,37 +56,34 @@ export default function TimePicker({ onTimeSelect, selectedTime }: TimePickerPro
       </button>
 
       {showPicker && (
-        <div className="absolute top-full mt-3 right-0 bg-linear-to-br from-slate-900 to-purple-900 border border-purple-500/30 rounded-xl p-6 shadow-2xl z-50 w-80 backdrop-blur-sm">
+        <div className="absolute right-0 top-full z-50 mt-3 w-80 rounded-[18px] border border-[#ECD8B6] bg-[#FFF8EA] p-5 shadow-[0_18px_28px_rgba(34,23,13,0.18)]">
           <div className="space-y-4">
-            {/* Date Input */}
             <div>
-              <label className="block text-sm font-semibold text-purple-300 mb-2">
+              <label className="mb-2 block text-sm font-bold text-[#806C55]">
                 {t("selectDate") || "Select Date"}
               </label>
               <input
                 type="date"
                 value={formatDate(tempDate)}
                 onChange={handleDateChange}
-                className="w-full px-4 py-2 bg-slate-800 border border-purple-500/50 rounded-lg text-white focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
+                className="w-full rounded-xl border border-[#ECD8B6] bg-[#F7EFE1] px-4 py-2 font-semibold text-[#281B10] focus:border-[#D28719] focus:outline-none focus:ring-2 focus:ring-[#D28719]/20"
               />
             </div>
 
-            {/* Time Input */}
             <div>
-              <label className="block text-sm font-semibold text-purple-300 mb-2">
+              <label className="mb-2 block text-sm font-bold text-[#806C55]">
                 {t("selectTime") || "Select Time"}
               </label>
               <input
                 type="time"
                 value={formatTime(tempDate)}
                 onChange={handleTimeChange}
-                className="w-full px-4 py-2 bg-slate-800 border border-purple-500/50 rounded-lg text-white focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20"
+                className="w-full rounded-xl border border-[#ECD8B6] bg-[#F7EFE1] px-4 py-2 font-semibold text-[#281B10] focus:border-[#D28719] focus:outline-none focus:ring-2 focus:ring-[#D28719]/20"
               />
             </div>
 
-            {/* Display Selected DateTime */}
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
-              <p className="text-sm text-purple-300">
+            <div className="rounded-xl border border-[#ECD8B6] bg-[#F0E2CC] p-3">
+              <p className="text-sm font-semibold text-[#806C55]">
                 {tempDate.toLocaleString("en-US", {
                   weekday: "short",
                   year: "numeric",
@@ -98,17 +95,16 @@ export default function TimePicker({ onTimeSelect, selectedTime }: TimePickerPro
               </p>
             </div>
 
-            {/* Buttons */}
             <div className="flex gap-3">
               <button
                 onClick={handleNow}
-                className="flex-1 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white font-semibold transition-colors"
+                className="flex-1 rounded-xl bg-[#2A2119] px-4 py-2 font-bold text-[#FFF8EA] transition-colors hover:bg-[#3A2D22]"
               >
                 {t("now") || "Now"}
               </button>
               <button
                 onClick={handleApply}
-                className="flex-1 px-4 py-2 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg text-white font-semibold transition-colors"
+                className="flex-1 rounded-xl bg-[#D28719] px-4 py-2 font-bold text-[#251500] transition-colors hover:bg-[#BE7816]"
               >
                 {t("apply") || "Apply"}
               </button>

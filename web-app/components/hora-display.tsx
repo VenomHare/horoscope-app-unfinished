@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { useLanguage } from "@/hooks/use-language"
 import HoraCard from "./hora-card"
 import LoadingSpinner from "./loading-spinner"
@@ -68,30 +69,40 @@ export default function HoraDisplay() {
   }
 
   return (
-    <div className="w-full max-w-3xl mt-[10dvh]">
-      <div className="text-center mb-12">
-        <h1 className="pt-4 text-5xl md:text-6xl font-bold bg-linear-to-r from-amber-300 via-purple-300 to-pink-300 bg-clip-text text-transparent mb-2 animate-pulse">
-          {t("title")}
-        </h1>
-        <p className="text-purple-300 text-lg">{t("subtitle")}</p>
+    <div className="w-full max-w-3xl pt-8 md:pt-12">
+      <div className="mb-6 flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-extrabold leading-none text-[#281B10] md:text-5xl">
+            {t("title")}
+          </h1>
+          <p className="mt-2 text-sm font-semibold text-[#806C55] md:text-base">{t("subtitle")}</p>
+        </div>
+        <Image
+          src="/logo.png"
+          alt="Horashtak logo"
+          width={96}
+          height={96}
+          priority
+          className="size-16 shrink-0 md:size-20"
+        />
       </div>
 
-      <div className="flex justify-center mb-8">
+      <div className="mb-5 flex justify-center md:justify-end">
         <TimePicker onTimeSelect={handleTimeSelect} selectedTime={selectedTime} />
       </div>
 
       {loading && <LoadingSpinner />}
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-6 text-center backdrop-blur-sm">
-          <p className="text-red-300 font-semibold mb-2">{t("error")}: Connection Issue</p>
-          <p className="text-red-200 text-sm mb-4">{error}</p>
-          <p className="text-red-200/70 text-xs">
+        <div className="rounded-[18px] border border-[#F1B7AA] bg-[#FFE0D8] p-6 text-center shadow-sm">
+          <p className="mb-2 font-bold text-[#7E271B]">{t("error")}: Connection Issue</p>
+          <p className="mb-4 text-sm text-[#7E271B]">{error}</p>
+          <p className="text-xs text-[#7E271B]/70">
             {t("tryAgain") || "Make sure the server is running at http://localhost:3000"}
           </p>
           <button
             onClick={() => handleTimeSelect(selectedTime)}
-            className="mt-4 px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition-colors"
+            className="mt-4 rounded-xl bg-[#7E271B] px-6 py-2 font-bold text-[#FFF8EA] transition-colors hover:bg-[#681E15]"
           >
             {t("retry") || "Retry"}
           </button>
@@ -103,13 +114,13 @@ export default function HoraDisplay() {
       {/* {!loading && !error && horaData && <HoraTable selectedDate={selectedTime} />} */}
 
       {!loading && !error && !horaData && (
-        <div className="bg-yellow-500/10 border border-yellow-500/50 rounded-xl p-6 text-center backdrop-blur-sm">
-          <p className="text-yellow-300">{t("noData")}</p>
+        <div className="rounded-[18px] border border-[#ECD8B6] bg-[#FFF8EA] p-6 text-center">
+          <p className="font-semibold text-[#806C55]">{t("noData")}</p>
         </div>
       )}
 
       {!loading && !error && horaData && (
-        <div className="mt-12 text-center text-sm text-purple-400">
+        <div className="mt-6 text-center text-sm font-semibold text-[#806C55]">
           <p>
             {t("lastUpdated")}: {selectedTime.toLocaleTimeString()}
           </p>

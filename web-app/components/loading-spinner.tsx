@@ -4,14 +4,14 @@ export default function LoadingSpinner() {
   return (
     <div className="flex flex-col items-center justify-center gap-6">
       <div className="relative w-20 h-20">
-        <div className="absolute inset-0 rounded-full border-4 border-purple-500/20" />
-        <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-purple-400 border-r-pink-400 animate-spin" />
+        <div className="absolute inset-0 rounded-full border-4 border-[#ECD8B6]" />
+        <div className="absolute inset-0 rounded-full border-4 border-transparent border-r-[#D28719] border-t-[#8F4E1F] animate-spin" />
         <div
-          className="absolute inset-2 rounded-full border-2 border-transparent border-b-cyan-400 animate-spin"
+          className="absolute inset-2 rounded-full border-2 border-transparent border-b-[#2A2119] animate-spin"
           style={{ animationDirection: "reverse", animationDuration: "1.5s" }}
         />
       </div>
-      <p className="text-purple-300 text-lg font-semibold">Loading your hora...</p>
+      <p className="text-lg font-bold text-[#806C55]">Loading your hora...</p>
     </div>
   )
 }

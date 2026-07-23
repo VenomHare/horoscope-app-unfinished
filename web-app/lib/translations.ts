@@ -1,6 +1,6 @@
 export const translations = {
   en: {
-    title: "HORA DETECTOR",
+    title: "HORASHTAK",
     subtitle: "Discover your astrological hour",
     currentHora: "Current Hora",
     endsAt: "Ends At",
@@ -21,7 +21,7 @@ export const translations = {
     upcoming: "Upcoming",
   },
   hi: {
-    title: "होरा डिटेक्टर",
+    title: "होराष्टक",
     subtitle: "अपनी ज्योतिषीय घड़ी खोजें",
     currentHora: "वर्तमान होरा",
     endsAt: "समाप्त होता है",
@@ -42,7 +42,7 @@ export const translations = {
     upcoming: "आने वाले",
   },
   mr: {
-    title: "होरा डिटेक्टर",
+    title: "होराष्टक",
     subtitle: "तुमचा ज्योतिषीय तास शोधा",
     currentHora: "वर्तमान होरा",
     endsAt: "समाप्त होते",

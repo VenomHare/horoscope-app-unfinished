@@ -1,7 +1,7 @@
 "use client"
 
 import { useLanguage } from "@/hooks/use-language"
-import { getGrahaColor, getGrahaSymbol } from "@/lib/graha-utils"
+import { getGrahaSymbol, getGrahaTheme } from "@/lib/graha-utils"
 
 interface HoraData {
   time: string
@@ -16,53 +16,46 @@ interface HoraCardProps {
 
 export default function HoraCard({ horaData }: HoraCardProps) {
   const { t } = useLanguage()
-  const grahaColor = getGrahaColor(horaData.hora)
+  const grahaTheme = getGrahaTheme(horaData.hora)
   const grahaSymbol = getGrahaSymbol(horaData.hora)
 
   return (
-    <div className="relative group">
-      {/* Animated glow background */}
+    <div className="relative">
       <div
-        className={`absolute inset-0 bg-gradient-to-r ${grahaColor} rounded-2xl blur-2xl opacity-40 group-hover:opacity-60 transition-opacity duration-500 animate-pulse`}
+        className="absolute inset-x-8 top-8 h-56 rounded-[28px] blur-2xl"
+        style={{ backgroundColor: grahaTheme.background, opacity: 0.22 }}
       />
 
-      {/* Card */}
-      <div className="relative bg-gradient-to-br from-slate-900/80 to-purple-900/40 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-8 md:p-12 shadow-2xl">
-        {/* Current Time Section */}
-        <div className="text-center mb-8">
-          <div className="text-6xl md:text-7xl font-bold text-transparent bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text mb-2 font-mono">
-            {horaData.time}
+      <div
+        className="relative min-h-[270px] rounded-[28px] p-6 shadow-[0_18px_28px_rgba(34,23,13,0.22)] md:p-8"
+        style={{ backgroundColor: grahaTheme.background, color: grahaTheme.foreground }}
+      >
+        <div className="flex h-full min-h-[220px] flex-col justify-between gap-8">
+          <div className="flex items-start justify-between gap-4">
+            <p className="text-base font-bold">{t("currentHora")}</p>
+            <div className="text-right">
+              <div className="font-mono text-2xl font-bold md:text-3xl">{horaData.time}</div>
+              <div className="mt-1 text-sm font-bold opacity-80">{horaData.day}</div>
+            </div>
           </div>
-          <div className="text-xl md:text-2xl text-purple-300 font-semibold">{horaData.day}</div>
-        </div>
 
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent mb-8" />
-
-        {/* Hora Section */}
-        <div className="text-center mb-8">
-          <p className="text-purple-400 text-sm uppercase tracking-widest mb-4">{t("currentHora")}</p>
-
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className={`text-5xl md:text-6xl animate-bounce`} style={{ animationDelay: "0s" }}>
+          <div>
+            <div className="text-[86px] leading-none md:text-[104px]">
               {grahaSymbol}
             </div>
-            <div className="text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-amber-300 via-orange-300 to-pink-300 bg-clip-text">
+            <div className="mt-2 text-5xl font-extrabold leading-none md:text-6xl">
               {horaData.hora}
             </div>
+            <p className="mt-3 max-w-sm text-sm font-semibold opacity-75">{t("horaDescription")}</p>
           </div>
 
-          <p className="text-gray-400 text-sm">{t("horaDescription")}</p>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent mb-8" />
-
-        {/* End Time Section */}
-        <div className="text-center">
-          <p className="text-purple-400 text-sm uppercase tracking-widest mb-3">{t("endsAt")}</p>
-          <div className="text-3xl md:text-4xl font-bold text-cyan-300 font-mono">{horaData.endTime}</div>
-          <p className="text-gray-500 text-xs mt-2">{t("nextHoraInfo")}</p>
+          <div className="flex items-end justify-between gap-3 border-t border-current/20 pt-4">
+            <div className="text-sm font-bold">{t("endsAt")}</div>
+            <div className="text-right">
+              <div className="font-mono text-3xl font-bold">{horaData.endTime}</div>
+              <p className="mt-1 text-xs font-semibold opacity-70">{t("nextHoraInfo")}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

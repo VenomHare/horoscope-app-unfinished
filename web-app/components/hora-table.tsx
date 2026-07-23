@@ -14,14 +14,14 @@ interface HoraData {
 }
 
 const GRAHAS_MAP: Record<string, { en: string; hi: string; mr: string; symbol: string; color: string }> = {
-    Ravi: { en: "Sun", hi: "रवि", mr: "रवी", symbol: "☉", color: "from-yellow-500 to-orange-500" },
-    Shukra: { en: "Venus", hi: "शुक्र", mr: "शुक्र", symbol: "♀", color: "from-green-400 to-emerald-500" },
-    Budh: { en: "Mercury", hi: "बुध", mr: "बुध", symbol: "☿", color: "from-yellow-400 to-green-400" },
-    Chandra: { en: "Moon", hi: "चंद्र", mr: "चंद्र", symbol: "☽", color: "from-blue-300 to-cyan-300" },
-    Shani: { en: "Saturn", hi: "शनि", mr: "शनि", symbol: "♄", color: "from-slate-600 to-slate-700" },
-    Guru: { en: "Jupiter", hi: "बृहस्पति", mr: "गुरु", symbol: "♃", color: "from-yellow-600 to-orange-600" },
-    Mangal: { en: "Mars", hi: "मंगल", mr: "मंगळ", symbol: "♂", color: "from-red-500 to-orange-500" },
-    Rahu: { en: "Rahu", hi: "राहु", mr: "राहू", symbol: "⬡", color: "from-indigo-600 to-purple-700" },
+    Ravi: { en: "Sun", hi: "रवि", mr: "रवी", symbol: "☉", color: "#F0A51A" },
+    Shukra: { en: "Venus", hi: "शुक्र", mr: "शुक्र", symbol: "♀", color: "#41A678" },
+    Budh: { en: "Mercury", hi: "बुध", mr: "बुध", symbol: "☿", color: "#C5B52C" },
+    Chandra: { en: "Moon", hi: "चंद्र", mr: "चंद्र", symbol: "☽", color: "#78A8D8" },
+    Shani: { en: "Saturn", hi: "शनि", mr: "शनि", symbol: "♄", color: "#5C6370" },
+    Guru: { en: "Jupiter", hi: "बृहस्पति", mr: "गुरु", symbol: "♃", color: "#D28719" },
+    Mangal: { en: "Mars", hi: "मंगल", mr: "मंगळ", symbol: "♂", color: "#D84B35" },
+    Rahu: { en: "Rahu", hi: "राहु", mr: "राहू", symbol: "⬡", color: "#5C6370" },
 }
 
 export default function HoraTable() {
@@ -109,17 +109,16 @@ export default function HoraTable() {
     }
 
     return (
-        <div className="w-full max-w-6xl mx-auto mt-12 mb-8 px-4">
-            {/* Date Picker Header */}
-            <div className="bg-linear-to-r from-purple-950/50 to-pink-950/50 backdrop-blur-md border border-purple-500/20 rounded-2xl p-6 mb-8">
+        <div className="mx-auto mb-8 mt-10 w-full max-w-6xl px-0 md:px-4">
+            <div className="mb-5 rounded-[18px] border border-[#ECD8B6] bg-[#FFF8EA] p-5 shadow-sm">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                        <Calendar className="w-6 h-6 text-purple-400" />
+                        <Calendar className="size-6 text-[#8F4E1F]" />
                         <div>
-                            <p className="text-sm text-purple-300/70 font-semibold uppercase tracking-wide">
+                            <p className="text-sm font-extrabold text-[#806C55]">
                                 {language === "en" ? "Daily Schedule" : language === "hi" ? "दैनिक समय सारणी" : "दैनिक वेळापत्रक"}
                             </p>
-                            <p className="text-2xl font-bold bg-linear-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text text-transparent">
+                            <p className="text-xl font-extrabold text-[#281B10] md:text-2xl">
                                 {selectedDate.toLocaleDateString(language === "en" ? "en-US" : language === "hi" ? "hi-IN" : "mr-IN", {
                                     weekday: "long",
                                     year: "numeric",
@@ -134,21 +133,21 @@ export default function HoraTable() {
                     <div className="flex items-center gap-3">
                         <button
                             onClick={handlePrevDay}
-                            className="p-2 rounded-lg hover:bg-purple-500/20 transition-colors duration-200 text-purple-400 hover:text-purple-300"
+                            className="rounded-xl p-2 text-[#806C55] transition-colors duration-200 hover:bg-[#F0E2CC] hover:text-[#281B10]"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
 
                         <button
                             onClick={handleToday}
-                            className="px-4 py-2 bg-linear-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-semibold text-sm hover:shadow-lg hover:shadow-cyan-500/50 transition-all duration-200"
+                            className="rounded-xl bg-[#2A2119] px-4 py-2 text-sm font-bold text-[#FFF8EA] transition-colors duration-200 hover:bg-[#3A2D22]"
                         >
                             {language === "en" ? "Today" : language === "hi" ? "आज" : "आज"}
                         </button>
 
                         <button
                             onClick={handleNextDay}
-                            className="p-2 rounded-lg hover:bg-purple-500/20 transition-colors duration-200 text-purple-400 hover:text-purple-300"
+                            className="rounded-xl p-2 text-[#806C55] transition-colors duration-200 hover:bg-[#F0E2CC] hover:text-[#281B10]"
                         >
                             <ChevronRight className="w-5 h-5" />
                         </button>
@@ -158,13 +157,13 @@ export default function HoraTable() {
 
             {/* Error State */}
             {error && (
-                <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6 flex gap-3">
-                    <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                <div className="mb-6 flex gap-3 rounded-[18px] border border-[#F1B7AA] bg-[#FFE0D8] p-4">
+                    <AlertCircle className="mt-0.5 size-5 shrink-0 text-[#7E271B]" />
                     <div>
-                        <p className="text-red-300 font-semibold text-sm">
+                        <p className="text-sm font-bold text-[#7E271B]">
                             {language === "en" ? "Error" : language === "hi" ? "त्रुटि" : "त्रुटी"}
                         </p>
-                        <p className="text-red-200/70 text-xs">{error}</p>
+                        <p className="text-xs text-[#7E271B]/70">{error}</p>
                     </div>
                 </div>
             )}
@@ -173,29 +172,29 @@ export default function HoraTable() {
             {loading && (
                 <div className="space-y-2">
                     {Array.from({ length: 6 }).map((_, i) => (
-                        <div key={i} className="h-12 bg-slate-800/50 rounded-lg animate-pulse" />
+                        <div key={i} className="h-14 animate-pulse rounded-[18px] bg-[#FFF8EA]" />
                     ))}
                 </div>
             )}
 
             {!loading && horas.length > 0 && (
-                <div className="overflow-x-auto rounded-2xl border border-purple-500/20 bg-slate-950/50 backdrop-blur">
+                <div className="overflow-x-auto rounded-[18px] border border-[#ECD8B6] bg-[#FFF8EA] shadow-sm">
                     <table className="w-full">
                         <thead>
-                            <tr className="bg-linear-to-r from-purple-950/80 to-pink-950/80 border-b border-purple-500/20">
-                                <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
+                            <tr className="border-b border-[#ECD8B6] bg-[#F0E2CC]">
+                                <th className="px-4 py-4 text-left text-sm font-extrabold text-[#806C55] sm:px-6">
                                     {language === "en" ? "Hour" : language === "hi" ? "घंटा" : "तास"}
                                 </th>
-                                <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
+                                <th className="px-4 py-4 text-left text-sm font-extrabold text-[#806C55] sm:px-6">
                                     {language === "en" ? "Start Time" : language === "hi" ? "शुरुआत का समय" : "सुरुवातीचा वेळ"}
                                 </th>
-                                <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
+                                <th className="px-4 py-4 text-left text-sm font-extrabold text-[#806C55] sm:px-6">
                                     {language === "en" ? "End Time" : language === "hi" ? "समाप्ति का समय" : "समाप्तीचा वेळ"}
                                 </th>
-                                <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
+                                <th className="px-4 py-4 text-left text-sm font-extrabold text-[#806C55] sm:px-6">
                                     {language === "en" ? "Graha" : language === "hi" ? "ग्रह" : "ग्रह"}
                                 </th>
-                                <th className="px-4 sm:px-6 py-4 text-left text-sm font-bold text-purple-300 uppercase tracking-wider">
+                                <th className="px-4 py-4 text-left text-sm font-extrabold text-[#806C55] sm:px-6">
                                     {language === "en" ? "Status" : language === "hi" ? "स्थिति" : "स्थिती"}
                                 </th>
                             </tr>
@@ -204,39 +203,42 @@ export default function HoraTable() {
                             {horas.map((hora, index) => {
                                 const grahaInfo = getGrahaInfo(hora.hora)
                                 const rowBg = hora.isPast
-                                    ? "bg-slate-800/30 opacity-50"
+                                    ? "bg-[#F0E2CC]/60 opacity-60"
                                     : hora.isCurrent
-                                        ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-l-4 border-cyan-400"
-                                        : "bg-slate-800/20 hover:bg-slate-800/40"
+                                        ? "border-l-4 bg-[#FFF2CC]"
+                                        : "bg-[#FFF8EA] hover:bg-[#F7EFE1]"
 
                                 const statusColor = hora.isPast
-                                    ? "text-slate-500"
+                                    ? "text-[#806C55]"
                                     : hora.isCurrent
-                                        ? "text-cyan-400 font-bold"
-                                        : "text-green-400"
+                                        ? "font-bold text-[#8F4E1F]"
+                                        : "text-[#41A678]"
 
                                 return (
                                     <tr
                                         key={index}
-                                        className={`${rowBg} border-b border-purple-500/10 transition-all duration-200 hover:shadow-lg hover:shadow-purple-500/10`}
+                                        className={`${rowBg} border-b border-[#ECD8B6] transition-colors duration-200`}
+                                        style={hora.isCurrent ? { borderLeftColor: grahaInfo.color } : undefined}
                                     >
-                                        <td className="px-4 sm:px-6 py-4 font-semibold text-white">
+                                        <td className="px-4 py-4 font-bold text-[#281B10] sm:px-6">
                                             {String(index).padStart(2, "0")}
                                             {hora.isCurrent && (
-                                                <span className="ml-2 inline-block w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                                                <span className="ml-2 inline-block size-2 animate-pulse rounded-full bg-[#D28719]" />
                                             )}
                                         </td>
-                                        <td className="px-4 sm:px-6 py-4 text-sm text-white/80 font-mono">{hora.startTime}</td>
-                                        <td className="px-4 sm:px-6 py-4 text-sm text-white/80 font-mono">{hora.endTime}</td>
-                                        <td className="px-4 sm:px-6 py-4">
+                                        <td className="px-4 py-4 font-mono text-sm font-semibold text-[#806C55] sm:px-6">{hora.startTime}</td>
+                                        <td className="px-4 py-4 font-mono text-sm font-semibold text-[#806C55] sm:px-6">{hora.endTime}</td>
+                                        <td className="px-4 py-4 sm:px-6">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-xl">{grahaInfo.symbol}</span>
-                                                <span className="text-sm font-semibold text-white">
+                                                <span className="flex size-9 items-center justify-center rounded-xl bg-[#E9D8BD] text-xl text-[#281B10]">
+                                                    {grahaInfo.symbol}
+                                                </span>
+                                                <span className="text-sm font-bold text-[#281B10]">
                                                     {language === "en" ? grahaInfo.en : language === "hi" ? grahaInfo.hi : grahaInfo.mr}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className={`px-4 sm:px-6 py-4 text-xs font-bold uppercase tracking-wide ${statusColor}`}>
+                                        <td className={`px-4 py-4 text-xs font-extrabold sm:px-6 ${statusColor}`}>
                                             {hora.isPast
                                                 ? language === "en"
                                                     ? "Passed"
@@ -265,9 +267,9 @@ export default function HoraTable() {
 
             {/* No Data State */}
             {!loading && horas.length === 0 && !error && (
-                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-8 text-center">
-                    <AlertCircle className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
-                    <p className="text-yellow-300 font-semibold">
+                <div className="rounded-[18px] border border-[#ECD8B6] bg-[#FFF8EA] p-8 text-center">
+                    <AlertCircle className="mx-auto mb-3 size-8 text-[#D28719]" />
+                    <p className="font-bold text-[#806C55]">
                         {language === "en"
                             ? "No data available"
                             : language === "hi"

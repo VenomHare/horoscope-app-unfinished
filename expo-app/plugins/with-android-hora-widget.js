@@ -27,7 +27,7 @@ function withAndroidHoraWidget(config) {
       $: {
         'android:name': WIDGET_RECEIVER,
         'android:exported': 'true',
-        'android:label': 'Hora Detector',
+        'android:label': 'Horashtak',
       },
       'intent-filter': [
         {
@@ -180,7 +180,7 @@ function withAndroidHoraWidget(config) {
         if (!nextStrings.includes('name="hora_widget_placeholder"')) {
           nextStrings = nextStrings.replace(
             '</resources>',
-            '    <string name="hora_widget_placeholder">Hora Detector</string>\n</resources>',
+            '    <string name="hora_widget_placeholder">Horashtak</string>\n</resources>',
           );
         }
 
@@ -225,7 +225,7 @@ class HoraWidgetReceiver : AppWidgetProvider() {
     ) {
         val prefs = context.getSharedPreferences("hora_widget_prefs", Context.MODE_PRIVATE)
         val title = prefs.getString("title", "Current Hora")
-        val grahaName = prefs.getString("graha_name", "Hora Detector")
+        val grahaName = prefs.getString("graha_name", "Horashtak")
         val grahaSymbol = prefs.getString("graha_symbol", "")
         val timeRange = prefs.getString("time_range", "Open app to update")
         val highlighted = prefs.getBoolean("highlighted", false)

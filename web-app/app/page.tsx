@@ -16,11 +16,11 @@ export default function Home() {
   if (!mounted) return null
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-950 via-purple-950 to-slate-950">
+    <main className="relative min-h-screen overflow-hidden bg-[#F7EFE1] text-[#281B10]">
       <CelestialBackground />
 
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
-        <div className="absolute top-6 right-6">
+      <div className="relative z-10 flex min-h-screen flex-col items-center px-4 py-6 md:py-10">
+        <div className="w-full max-w-6xl">
           <LanguageSwitcher />
         </div>
         <HoraDisplay />
